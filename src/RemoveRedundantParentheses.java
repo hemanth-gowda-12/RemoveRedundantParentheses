@@ -15,6 +15,9 @@ public class RemoveRedundantParentheses {
         if(args.length>=1)
         {
             System.out.println("Processed output:"+ removeRedundantParentheses(args[0]));
+//            System.out.println("Processed output:"+ removeRedundantParentheses("x+(y+z)+(t+(v+w))"));
+//            System.out.println("Processed output:"+ removeRedundantParentheses("1*(22+(3*(4+5)))"));
+//            System.out.println("Processed output:"+ removeRedundantParentheses("23 + (3 / -5)"));
         }
         else
         {
@@ -69,18 +72,16 @@ public class RemoveRedundantParentheses {
         while(redundantflag)
         {
             redundantflag=false;
-            boolean start=false;
             int count=0;
 
             for(int i=offset;i<expr.length();i++)
             {
                 if(expr.charAt(i)=='(')
                 {
-                    if(count==0 && !start)
+                    if(count==0)
                     {
                         open=i;
                         offset=i+1;
-                        start=true;
                     }
                     count++;
 
