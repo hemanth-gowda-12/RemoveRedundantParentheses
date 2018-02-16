@@ -90,6 +90,13 @@ public class RemoveRedundantParentheses
                 }
                 String L_OP = getLeftOP(expr, openIndex);
                 String R_OP = getRightOP(expr, closeIndex);
+                if (L_OP == null && R_OP== null)
+                {
+                    toBeRemoved.add(openIndex);
+                    toBeRemoved.add(closeIndex);
+                    continue;
+                }
+
                 if (L_OP != null)
                 {
                     if (getPrecedence(L_OP.charAt(0)) <= innerOpPrecedence)
