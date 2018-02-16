@@ -1,181 +1,16 @@
 import java.util.HashSet;
 import java.util.Set;
+import java.util.Stack;
 
-public class RemoveRedundantParentheses {
-
-
-    public static void main(String[] args)
-    {
-        /* Input examples:
-                "x+(y+z)+(t+(v+w))"
-                "1*(22+(3*(4+5)))"
-                "23 + (3 / -5)"
-        */
-
-        if(args.length>=1)
-        {
-            System.out.println("Processed output:"+ removeRedundantParentheses(args[0]));
-//            System.out.println("Processed output:"+ removeRedundantParentheses("x+(y+z)+(t+(v+w))"));
-//            System.out.println("Processed output:"+ removeRedundantParentheses("1*(22+(3*(4+5)))"));
-//            System.out.println("Processed output:"+ removeRedundantParentheses("23 + (3 / -5)"));
-        }
-        else
-        {
-            System.err.println("No argument provided!! Please try again.");
-        }
-    }
-
-    public static String getLeftOP(String expr, int index)
-    {
-        if(index==0)
-        {
-            return null;
-        }
-        else if(expr.charAt(index-1)=='+')
-            return "+";
-        else if(expr.charAt(index-1)=='-')
-            return "-";
-        else if(expr.charAt(index-1)=='*')
-            return "*";
-        else if(expr.charAt(index-1)=='/')
-            return "/";
-
-        return null;
-    }
-
-    public static String getRightOP(String expr, int index)
-    {
-        if(index==expr.length()-1)
-        {
-            return null;
-        }
-        else if(expr.charAt(index+1)=='+')
-            return "+";
-        else if(expr.charAt(index+1)=='-')
-            return "-";
-        else if(expr.charAt(index+1)=='*')
-            return "*";
-        else if(expr.charAt(index+1)=='/')
-            return "/";
-
-        return null;
-    }
-
-    private static String removeRedundantParentheses(String expr)
-    {
-        boolean redundantflag=true;
-        int open=0;
-        int offset=0;
-        int close=0;
-        Set<Integer> toBeRemoved=new HashSet<>();
-
-        while(redundantflag)
-        {
-            redundantflag=false;
-            int count=0;
-
-            for(int i=offset;i<expr.length();i++)
-            {
-                if(expr.charAt(i)=='(')
-                {
-                    if(count==0)
-                    {
-                        open=i;
-                        offset=i+1;
-                    }
-                    count++;
-
-                }
-                if(expr.charAt(i)==')')
-                {
-                        count--;
-
-                        if(count==-1)
-                        {
-                            redundantflag=true;
-                            offset = i + 1;
-                            break;
-                        }
-                    if(count==0)
-                    {
-                        close=i;
-
-                        String L_Op = getLeftOP(expr,open);
-                        String R_Op = getRightOP(expr,close);
-                        if (L_Op== null && R_Op == null)
-                        {
-                            toBeRemoved.add(open);
-                            toBeRemoved.add(close);
-                        }
-                        else
-                        {
-                            int bracCount=0;
-                            for(int x=open+1;x<close;x++)
-                            {
-                                if(expr.charAt(x)=='(')
-                                {
-                                    bracCount++;continue;
-                                }
-                                else if (expr.charAt(x)==')')
-                                {
-                                    bracCount--;continue;
-                                }
-                                if(bracCount==0)
-                                {
-                                    boolean predTest=false;
-
-                                    if(isOperator(expr.charAt(x)))
-                                    {
-                                        if(L_Op!=null)
-                                            predTest=getPrecedence(L_Op.charAt(0))<=getPrecedence(expr.charAt(x));
-                                        if(R_Op!=null)
-                                            if(!predTest)
-                                                predTest=getPrecedence(R_Op.charAt(0)) <= getPrecedence(expr.charAt(x));
-
-
-                                        if(predTest)
-                                        {
-                                            toBeRemoved.add(open);
-                                            toBeRemoved.add(close);
-                                            break;
-                                        }
-                                    }
-
-                                }
-
-
-                            }
-
-                        }
-
-                        redundantflag=true;
-                        break;
-
-                    }
-                }
-            }
-
-        }
-
-
-        StringBuilder returnVal=new StringBuilder();
-        for(int i=0;i<expr.length();i++)
-        {
-            if(!toBeRemoved.contains(i))
-            {
-                returnVal.append(expr.charAt(i));
-            }
-        }
-        return returnVal.toString();
-    }
+public class RemoveRedundantParentheses
+{
 
     private static int getPrecedence(char c)
     {
-        if(c=='+'||c=='-')
+        if (c == '+' || c == '-')
         {
             return 1;
-        }
-        else if(c=='/'||c=='*')
+        } else if (c == '/' || c == '*')
         {
             return 2;
         }
@@ -184,11 +19,135 @@ public class RemoveRedundantParentheses {
 
     private static boolean isOperator(char c)
     {
-        if(c =='+' || c =='-' || c == '/' || c == '*')
+        if (c == '+' || c == '-' || c == '/' || c == '*')
         {
             return true;
         }
         return false;
+    }
+
+    public static String getLeftOP(String expr, int index)
+    {
+        if (index == 0)
+        {
+            return null;
+        } else if (expr.charAt(index - 1) == '+')
+            return "+";
+        else if (expr.charAt(index - 1) == '-')
+            return "-";
+        else if (expr.charAt(index - 1) == '*')
+            return "*";
+        else if (expr.charAt(index - 1) == '/')
+            return "/";
+
+        return null;
+    }
+
+    public static String getRightOP(String expr, int index)
+    {
+        if (index == expr.length() - 1)
+        {
+            return null;
+        } else if (expr.charAt(index + 1) == '+')
+            return "+";
+        else if (expr.charAt(index + 1) == '-')
+            return "-";
+        else if (expr.charAt(index + 1) == '*')
+            return "*";
+        else if (expr.charAt(index + 1) == '/')
+            return "/";
+
+        return null;
+    }
+
+    private static String removeRedundantParentheses(String expr)
+    {
+
+        Stack<Integer> paranStack = new Stack<>();
+        Stack<Integer> innerOperatorPrecedenceStack = new Stack<>();
+        Set<Integer> toBeRemoved = new HashSet<>();
+
+        for (int i = 0; i < expr.length(); i++)
+        {
+            if (expr.charAt(i) == '(')
+            {
+                paranStack.push(i);
+                innerOperatorPrecedenceStack.push(Integer.MIN_VALUE);
+            } else if (expr.charAt(i) == ')')
+            {
+                int openIndex = paranStack.pop();
+                int closeIndex = i;
+
+                Integer innerOpPrecedence = innerOperatorPrecedenceStack.pop();
+                if (innerOpPrecedence == Integer.MIN_VALUE)
+                {
+                    toBeRemoved.add(openIndex);
+                    toBeRemoved.add(closeIndex);
+                    continue;
+                } else
+                {
+                    innerOperatorPrecedenceStack.pop();
+                }
+                String L_OP = getLeftOP(expr, openIndex);
+                String R_OP = getRightOP(expr, closeIndex);
+                if (L_OP != null)
+                {
+                    if (getPrecedence(L_OP.charAt(0)) <= innerOpPrecedence)
+                    {
+                        toBeRemoved.add(openIndex);
+                        toBeRemoved.add(closeIndex);
+                    }
+                    continue;
+                }
+                if (R_OP != null)
+                {
+                    if (getPrecedence(R_OP.charAt(0)) <= innerOpPrecedence)
+                    {
+                        toBeRemoved.add(openIndex);
+                        toBeRemoved.add(closeIndex);
+                    }
+                }
+
+            } else if (isOperator(expr.charAt(i)))
+            {
+                if (!innerOperatorPrecedenceStack.isEmpty() && !paranStack.isEmpty())
+                    if (innerOperatorPrecedenceStack.peek().intValue() == Integer.MIN_VALUE)
+                    {
+                        innerOperatorPrecedenceStack.push(getPrecedence(expr.charAt(i)));
+                    } else
+                    {
+                        Integer oldOpPrecedence = innerOperatorPrecedenceStack.pop();
+                        innerOperatorPrecedenceStack.push(Integer.min(getPrecedence(expr.charAt(i)), oldOpPrecedence.intValue()));
+                    }
+            }
+
+        }
+
+        StringBuilder returnVal = new StringBuilder();
+        for (int i = 0; i < expr.length(); i++)
+        {
+            if (!toBeRemoved.contains(i))
+            {
+                returnVal.append(expr.charAt(i));
+            }
+        }
+        return returnVal.toString();
+    }
+
+    public static void main(String[] args)
+    {
+        /* Input examples:
+                "x+(y+z)+(t+(v+w))"
+                "1*(22+(3*(4+5)))"
+                "23 + (3 / -5)"
+        */
+        if (args.length >= 1)
+        {
+            System.out.println("Processed output:" + removeRedundantParentheses(args[0].replaceAll("\\s+", "")));
+        } else
+        {
+            System.err.println("No argument provided!! Please try again.");
+        }
     }
 
 }
