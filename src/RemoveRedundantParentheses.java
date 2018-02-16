@@ -28,10 +28,19 @@ public class RemoveRedundantParentheses
 
     public static String getLeftOP(String expr, int index)
     {
+
+        if(index>0 && expr.charAt(index - 1)=='(')
+        {
+            while(index!=0 && expr.charAt(index - 1)=='(')
+            {
+                index--;
+            }
+        }
+
         if (index == 0)
         {
             return null;
-        } else if (expr.charAt(index - 1) == '+')
+        }else if (expr.charAt(index - 1) == '+')
             return "+";
         else if (expr.charAt(index - 1) == '-')
             return "-";
@@ -45,6 +54,15 @@ public class RemoveRedundantParentheses
 
     public static String getRightOP(String expr, int index)
     {
+
+        if(index<expr.length()-1 && expr.charAt(index +1)==')')
+        {
+            while(index!=expr.length()-1 && expr.charAt(index + 1)==')')
+            {
+                index++;
+            }
+        }
+
         if (index == expr.length() - 1)
         {
             return null;
